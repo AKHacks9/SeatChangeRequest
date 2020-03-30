@@ -110,9 +110,21 @@ class Graph:
         :param cycle: list of nodes involved in cycle
         :return: employed label list
         """
+        def get_cyclic_vertices(cyclic_vertices):
+            """
+            return actual cyclic vertices from all ancestors vertices traversed while detecting loop
+            :param cyclic_vertices: dictionary containing the all ancestor traversed during loop detection
+                                    Key is the the start vertex(parent)
+            :return: list of cyclic vertices
+            """
+            temp_list = list(cyclic_vertices.keys())
+            temp_list.extend(list(cyclic_vertices.values())[0])
+            end_pos = len(temp_list)
+            for index in range(len(temp_list)):
+                if temp_list[index] == temp_list[end_pos - 1]:
+                    return temp_list[index::]
         start_pos = len(self.cycle_vertices)
-        self.cycle_vertices.extend(list(cycle.keys()))
-        self.cycle_vertices.extend(list(cycle.values())[0])
+        self.cycle_vertices.extend(get_cyclic_vertices(cycle))
         swap_list = []
         for i in range(start_pos, len(self.cycle_vertices) - 1):
             swap_list.append(self.edge_to_emp_map[(self.cycle_vertices[i], self.cycle_vertices[i+1])]["emp"][0])
